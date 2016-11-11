@@ -1,0 +1,297 @@
+\documentclass{report}
+\usepackage{listings}
+
+\begin{document}
+
+\begin{center}
+Report 3: Write SQL queries
+\end{center}
+\begin{lstlisting}
+First: using databse 'employees' by command
+USE employees;
+Then, Reading the database.
+\end{lstlisting}
+\subsection*{1. All info of all employees}
+\begin{lstlisting}
+SQL command: SELECT * FROM `employees`;
+\end{lstlisting}
+\begin{lstlisting}
+Output:
+
+| 499983 | 1955-08-29 | Uri            | Juneja           | F      | 1989-08-28 |
+| 499984 | 1959-08-31 | Kaijung        | Rodham           | M      | 1985-09-11 |
+| 499985 | 1964-12-26 | Gila           | Lukaszewicz      | M      | 1997-02-11 |
+| 499986 | 1952-07-22 | Nathan         | Ranta            | F      | 1985-08-11 |
+| 499987 | 1961-09-05 | Rimli          | Dusink           | F      | 1998-09-20 |
+| 499988 | 1962-09-28 | Bangqing       | Kleiser          | F      | 1986-06-06 |
+| 499989 | 1954-05-26 | Keiichiro      | Lindqvist        | M      | 1993-10-28 |
+| 499990 | 1963-11-03 | Khaled         | Kohling          | M      | 1985-10-10 |
+| 499991 | 1962-02-26 | Pohua          | Sichman          | F      | 1989-01-12 |
+| 499992 | 1960-10-12 | Siamak         | Salverda         | F      | 1987-05-10 |
+| 499993 | 1963-06-04 | DeForest       | Mullainathan     | M      | 1997-04-07 |
+| 499994 | 1952-02-26 | Navin          | Argence          | F      | 1990-04-24 |
+| 499995 | 1958-09-24 | Dekang         | Lichtner         | F      | 1993-01-12 |
+| 499996 | 1953-03-07 | Zito           | Baaz             | M      | 1990-09-27 |
+| 499997 | 1961-08-03 | Berhard        | Lenart           | M      | 1986-04-21 |
+| 499998 | 1956-09-05 | Patricia       | Breugel          | M      | 1993-10-13 |
+| 499999 | 1958-05-01 | Sachin         | Tsukuda          | M      | 1997-11-30 |
++--------+------------+----------------+------------------+--------+------------+
+300024 rows in set (0.44 sec)
+
+\end{lstlisting}
+
+\subsection*{2. All info of all departments}
+\begin{lstlisting}
+SQL command: SELECT * FROM `departments`;
+
+Output:
+
++---------+--------------------+
+| dept_no | dept_name          |
++---------+--------------------+
+| d001    | Marketing          |
+| d002    | Finance            |
+| d003    | Human Resources    |
+| d004    | Production         |
+| d005    | Development        |
+| d006    | Quality Management |
+| d007    | Sales              |
+| d008    | Research           |
+| d009    | Customer Service   |
++---------+--------------------+
+9 rows in set (0.02 sec)
+
+\end{lstlisting}
+
+\subsection*{3. Full names of all employees}
+\begin{lstlisting}
+SQL command: SELECT CONCAT(first_name,' ', last_name) AS fullname FROM `employees`;
+
+Output:
+
+| Gino Usery                     |
+| Yunming Mitina                 |
+| Mohammed Pleszkun              |
+| Uri Juneja                     |
+| Kaijung Rodham                 |
+| Gila Lukaszewicz               |
+| Nathan Ranta                   |
+| Rimli Dusink                   |
+| Bangqing Kleiser               |
+| Keiichiro Lindqvist            |
+| Khaled Kohling                 |
+| Pohua Sichman                  |
+| Siamak Salverda                |
+| DeForest Mullainathan          |
+| Navin Argence                  |
+| Dekang Lichtner                |
+| Zito Baaz                      |
+| Berhard Lenart                 |
+| Patricia Breugel               |
+| Sachin Tsukuda                 |
++--------------------------------+
+300024 rows in set (0.24 sec)
+
+\end{lstlisting}
+
+\subsection*{4. Names of all departments}
+\begin{lstlisting}
+SQL command: SELECT dept_name AS Name FROM `departments`;
+
+Output:
+
++--------------------+
+| Name               |
++--------------------+
+| Customer Service   |
+| Development        |
+| Finance            |
+| Human Resources    |
+| Marketing          |
+| Production         |
+| Quality Management |
+| Research           |
+| Sales              |
++--------------------+
+9 rows in set (0.00 sec)
+
+\end{lstlisting}
+
+\subsection*{5. Full names of employees working in "Sales" department}
+\begin{lstlisting}
+SQL command: SELECT CONCAT(first_name,' ', last_name) AS fullname FROM `departments` JOIN `dept_emp` ON departments.dept_no=dept_emp.dept_no JOIN `employees` ON dept_emp.emp_no=employees.emp_no WHERE departments.`dept_name`="Sales";
+
+Output:
+| Fumiko Luke                   |
+| Chenyi Hainaut                |
+| Jagoda Lanphier               |
+| Maja Lamba                    |
+| Raimond Leuchs                |
+| Mong Usdin                    |
+| Make Terekhov                 |
+| Aloke Wuwongse                |
+| Masako Angiulli               |
+| Christ Murtagh                |
+| Youpyo Perfilyeva             |
+| Leszek Pulkowski              |
+| Gaetan Veldwijk               |
+| Mihalis Crabtree              |
+| Bangqing Bodoff               |
+| Guozhong Felder               |
+| Gino Usery                    |
+| Nathan Ranta                  |
+| Rimli Dusink                  |
+| Bangqing Kleiser              |
++-------------------------------+
+52245 rows in set (1.26 sec)
+
+\end{lstlisting}
+
+\subsection*{6. Full names of male employees working in "Finance" department}
+\begin{lstlisting}
+SQL command: SELECT CONCAT(first_name,' ', last_name) AS fullname FROM `departments` JOIN `dept_emp` ON departments.dept_no=dept_emp.dept_no JOIN `employees` ON dept_emp.emp_no=employees.emp_no WHERE departments.`dept_name`="Finance" AND employees.`gender`="M";
+
+Output:
+| Subhada Schaft               |
+| Peer Gist                    |
+| Sachio Cannane               |
+| Huican Gelosh                |
+| Masamitsu Matheson           |
+| Doohun Pelz                  |
+| Parto Kambil                 |
+| Haldun Mullainathan          |
+| Ymte Potthoff                |
+| Nagui Stamatiou              |
+| Bernd Gluchowski             |
+| Phillip Panienski            |
+| Sastry Szmurlo               |
+| Jacopo Hasham                |
+| Moon Pleszkun                |
+| Hercules Porotnikoff         |
+| Shaz Bierbaum                |
+| Masali Chorvat               |
+| Keiichiro Lindqvist          |
+| Patricia Breugel             |
++------------------------------+
+10331 rows in set (0.44 sec)
+
+\end{lstlisting}
+
+\subsection*{7. Salaries of female employees working in "Marketing" department}
+\begin{lstlisting}
+SQL command: SELECT CONCAT(first_name,' ', last_name) AS fullname, salary FROM `departments` JOIN `dept_emp` ON departments.`dept_no`=dept_emp.`dept_no` JOIN `employees` ON dept_emp.emp_no=employees.emp_no JOIN `salaries` ON salaries.`emp_no`=employees.`emp_no` WHERE departments.`dept_name`="Marketing" AND employees.`gender`="F";
+
+Output:
+
+| Tonia Butner                |  69557 |
+| Tonia Butner                |  73008 |
+| Tonia Butner                |  75462 |
+| Tonia Butner                |  76837 |
+| Siamak Salverda             |  43005 |
+| Siamak Salverda             |  47320 |
+| Siamak Salverda             |  50713 |
+| Siamak Salverda             |  52539 |
+| Siamak Salverda             |  56516 |
+| Siamak Salverda             |  59357 |
+| Siamak Salverda             |  63601 |
+| Siamak Salverda             |  64778 |
+| Siamak Salverda             |  65475 |
+| Siamak Salverda             |  69488 |
+| Siamak Salverda             |  72212 |
+| Siamak Salverda             |  71874 |
+| Siamak Salverda             |  73574 |
+| Siamak Salverda             |  76708 |
+| Siamak Salverda             |  79327 |
+| Siamak Salverda             |  80389 |
++-----------------------------+--------+
+74996 rows in set (4.33 sec)
+
+\end{lstlisting}
+
+\subsection*{8. Full names of employees who have the same last name as their manager}
+\begin{lstlisting}
+
+Skip this query!
+
+\end{lstlisting}
+
+\subsection*{9. Full names of managers who have been doing the job twice}
+\begin{lstlisting}
+
+Skip this query command!
+
+\end{lstlisting}
+
+\subsection*{10. Full names of employees who was paid more than \$100000}
+\begin{lstlisting}
+SQL command: SELECT CONCAT(first_name,' ', last_name) AS Fullname FROM `employees` JOIN `salaries` ON employees.`emp_no`=salaries.`emp_no` WHERE salary > 100000;
+
+Output:
+
+| Gino Usery                  |
+| Gino Usery                  |
+| Gino Usery                  |
+| Gino Usery                  |
+| Gino Usery                  |
+| Gino Usery                  |
+| Gino Usery                  |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Nathan Ranta                |
+| Bangqing Kleiser            |
++-----------------------------+
+94696 rows in set (0.41 sec)
+
+\end{lstlisting}
+
+\subsection*{11. Names of all departments that have employees paid more than \$100000}
+\begin{lstlisting}
+SQL command: SELECT dept_name FROM `departments` JOIN `dept_emp` ON departments.`dept_no`=dept_emp.`dept_no` JOIN `salaries` ON dept_emp.`emp_no`=salaries.`emp_no` WHERE salary > 100000;
+
+Output:
+
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
+| Sales              |
++--------------------+
+104408 rows in set (2.31 sec)
+
+\end{lstlisting}
+
+\subsection*{12. Names of all departments that have employees paid more than \$1000000}
+\begin{lstlisting}
+SQL command: SELECT dept_name FROM `departments` JOIN `dept_emp` ON departments.`dept_no`=dept_emp.`dept_no` JOIN `salaries` ON dept_emp.`emp_no`=salaries.`emp_no` WHERE salary > 1000000;
+
+Output:
+
+Empty set (0.24 sec)
+
+\end{lstlisting}
+
+\end{document}

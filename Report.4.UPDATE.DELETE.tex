@@ -1,0 +1,78 @@
+\documentclass{report}
+\usepackage{listings}
+
+\begin{document}
+
+\begin{center}
+Report labwork4: Write SQL queries Update And Delete
+\end{center}
+\section*{1. The problem}
+Due to changes in company’s organization, the following departments are merged
+\begin{itemize}
+	\item Development (d005) and Research (d008) → Research and Development(d010)
+	\item Marketing (d001) and Sales (d007) → Marketing and Sales (d011)
+	\item neccessary SQL queries to implement these changes to the employees database
+\end{itemize}
+Requirements:
++ Describe your main steps to reach the above goal
++ Explain why you need to perform these steps
++ Write your SQL commands
++ Capture output of each SQL command
+
+
+\section*{2. Solving the problem}
+\subsection*{2.1. Main steps to reach the goal}
+
+\indent First, creating 2 new departments on the table 'departments' which are Research and Development(d010) department and Marketing and Sales (d011) department respectively use the INSERT command.
+\indent Next, updating the old departments into the new departments on the table 'dept_emp'.
+\indent Finally, deleting the tuples of the four departments on the table which are Development (d005), Research (d008), Marketing (d001), and Sales (d007).
+
+\subsection*{2.2. Explaining}
+\indent We need to create the new departments first before merging the old departments into a new one which is the update step. The final step which deletes the tuples is option.
+
+\subsection*{2.3. The SQL commands and the output of each SQL command}
+\begin{lstlisting}
+SQL INSERT command: 
+INSERT INTO `departments` (dept_no, dept_name) VALUES ('d010','Research and Development'), ('d011','Marketing and Sales');
++Output:
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+SQL UPDATE command: 
+UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d010" WHERE dept_emp.dept_no = "d005";
++ Output:
+Query OK, 85707 rows affected (1.73 sec)
+Rows matched: 85707  Changed: 85707  Warnings: 0
+
+SQL UPDATE command:
+UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d010" WHERE dept_emp.dept_no = "d008";
++ Output:
+Query OK, 15892 rows affected (0.42 sec)
+Rows matched: 21126  Changed: 15892  Warnings: 0
+
+// When I used this following command, I didn't get the same total number of rows affected in comparing with the 2 previous SQL commands (101599 rows affected).
+// UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d010" WHERE dept_emp.dept_no IN ('d005','d008');
+// Output:
+// Query OK, 101581 rows affected (2.83 sec)
+// Rows matched: 106815  Changed: 101581  Warnings: 0
+
+UPDATE command:
+UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d011" WHERE dept_emp.dept_no = "d001";
++ Output:
+Query OK, 20211 rows affected (0.48 sec)
+Rows matched: 20211  Changed: 20211  Warnings: 0
+
+UPDATE command:
+UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d011" WHERE dept_emp.dept_no = "d007";
++ Output:
+Query OK, 48593 rows affected (1.30 sec)
+Rows matched: 52245  Changed: 48593  Warnings: 0
+
+DELETE command:
+DELETE FROM `departments` WHERE departments.dept_no="d001" OR departments.dept_no="d005" OR departments.dept_no="d007" OR departments.dept_no="d008";
++ Output:
+Query OK, 4 rows affected (0.02 sec)
+
+\end{lstlisting}
+
+\end{document}

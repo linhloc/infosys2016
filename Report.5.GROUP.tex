@@ -1,0 +1,169 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 5: Write SQL queries Update And Delete \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong & Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\section{ What is the average salary of each employee? }
+
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT CONCAT(first_name, ' ', last_name) AS Fullname, AVG(salary) AS Avg_Salary FROM `employees` JOIN `salaries` ON employees.`emp_no`=salaries.`emp_no` GROUP BY salaries.`emp_no`;
+	\item Output
+| Gino Usery                     |  99940.8333 |
+| Yunming Mitina                 |  53637.1667 |
+| Mohammed Pleszkun              |  39829.5000 |
+| Uri Juneja                     |  46269.7500 |
+| Kaijung Rodham                 |  54431.2143 |
+| Gila Lukaszewicz               |  43500.6667 |
+| Nathan Ranta                   | 105961.7059 |
+| Rimli Dusink                   |  54279.6667 |
+| Bangqing Kleiser               |  86700.7143 |
+| Keiichiro Lindqvist            |  68260.4000 |
+| Khaled Kohling                 |  43325.0000 |
+| Pohua Sichman                  |  47829.5000 |
+| Siamak Salverda                |  64179.7500 |
+| DeForest Mullainathan          |  40944.6667 |
+| Navin Argence                  |  40000.0000 |
+| Dekang Lichtner                |  45891.6667 |
+| Zito Baaz                      |  63134.1429 |
+| Berhard Lenart                 |  66475.8667 |
+| Patricia Breugel               |  46665.5556 |
+| Sachin Tsukuda                 |  70625.0000 |
++--------------------------------+-------------+
+300024 rows in set (34.86 sec)
+
+\end{itemize}
+\end{lstlisting}
+
+\section{ How much was each employee paid in total? }
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT CONCAT(first_name, ' ', last_name), SUM(salary) AS Total_Wage FROM `employees` JOIN `salaries` ON employees.`emp_no`=salaries.`emp_no` GROUP BY salaries.`emp_no`;
+	\item Output
+| Gino Usery                         |    1199290 |
+| Yunming Mitina                     |     643646 |
+| Mohammed Pleszkun                  |      79659 |
+| Uri Juneja                         |     370158 |
+| Kaijung Rodham                     |     762037 |
+| Gila Lukaszewicz                   |     261004 |
+| Nathan Ranta                       |    1801349 |
+| Rimli Dusink                       |     162839 |
+| Bangqing Kleiser                   |    1213810 |
+| Keiichiro Lindqvist                |     341302 |
+| Khaled Kohling                     |     129975 |
+| Pohua Sichman                      |     286977 |
+| Siamak Salverda                    |    1026876 |
+| DeForest Mullainathan              |     245668 |
+| Navin Argence                      |      40000 |
+| Dekang Lichtner                    |     275350 |
+| Zito Baaz                          |     441939 |
+| Berhard Lenart                     |     997138 |
+| Patricia Breugel                   |     419990 |
+| Sachin Tsukuda                     |     353125 |
++------------------------------------+------------+
+300024 rows in set (30.93 sec)
+
+\end{itemize}
+\end{lstlisting}
+
+\section{ Minimum, maximum and total salaries of each department? }
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT dept_name, MIN(salary) AS Min_Wage, MAX(salary) AS Max_Wage, SUM(salary) AS Total_Wage FROM `departments` JOIN `dept_emp` ON departments.dept_no=dept_emp.dept_no JOIN `salaries` ON salaries.emp_no=dept_emp.emp_no GROUP BY departments.dept_no;
+	\item Output
++--------------------------+----------+----------+-------------+
+| dept_name                | Min_Wage | Max_Wage | Total_Wage  |
++--------------------------+----------+----------+-------------+
+| Finance                  |    38812 |   142395 | 11650834677 |
+| Human Resources          |    38735 |   141953 |  9363811425 |
+| Production               |    38623 |   138273 | 41554438942 |
+| Quality Management       |    38786 |   132103 | 10865203635 |
+| Customer Service         |    38836 |   144866 | 13143639841 |
+| Research and Development |    38849 |   144434 | 57200885924 |
+| Marketing and Sales      |    39127 |   158220 | 51054820927 |
++--------------------------+----------+----------+-------------+
+7 rows in set (53.61 sec)
+
+\end{itemize}
+\end{lstlisting}
+
+\section{ Which departments have paid more than 20 billion dollars for their employees? }
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT dept_name, SUM(salary) AS Total_Wage FROM `departments` JOIN `dept_emp` ON departments.dept_no=dept_emp.dept_no JOIN `salaries` ON salaries.emp_no=dept_emp.emp_no GROUP BY departments.dept_no HAVING Total_Wage > 20000000000;
+	\item Output
++--------------------------+-------------+
+| dept_name                | Total_Wage  |
++--------------------------+-------------+
+| Production               | 41554438942 |
+| Research and Development | 57200885924 |
+| Marketing and Sales      | 51054820927 |
++--------------------------+-------------+
+3 rows in set (51.39 sec)
+
+\end{itemize}
+\end{lstlisting}
+
+\section{ Total salaries of male employees in each department? }
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT dept_name, SUM(salary) AS Total_Wage_For_Male FROM `departments` JOIN `dept_emp` ON departments.dept_no=dept_emp.dept_no JOIN `salaries` ON salaries.emp_no=dept_emp.emp_no JOIN `employees` ON employees.emp_no=dept_emp.emp_no WHERE employees.gender="M" GROUP BY departments.dept_no;
+	\item Output
++--------------------------+---------------------+
+| dept_name                | Total_Wage_For_Male |
++--------------------------+---------------------+
+| Finance                  |          6940675318 |
+| Human Resources          |          5619533959 |
+| Production               |         24873889749 |
+| Quality Management       |          6472073211 |
+| Customer Service         |          7865587983 |
+| Research and Development |         34387010200 |
+| Marketing and Sales      |         30754859529 |
++--------------------------+---------------------+
+7 rows in set (55.27 sec)
+
+\end{itemize}
+\end{lstlisting}
+
+\section{ Total salaries of department managers for each department, from highest to lowest? }
+\begin{lstlisting}
+\begin{itemize}
+	\item SQL Command
+	SELECT dept_name, SUM(salary) AS Total_Wage_For_Dept_Managers FROM `departments` JOIN `dept_manager` ON departments.dept_no=dept_manager.dept_no JOIN `salaries` ON salaries.emp_no=dept_manager.emp_no WHERE salaries.emp_no=dept_manager.emp_no GROUP BY dept_manager.dept_no ORDER BY Total_Wage_For_Dept_Managers DESC;
+	\item Output
++--------------------------+------------------------------+
+| dept_name                | Total_Wage_For_Dept_Managers |
++--------------------------+------------------------------+
+| Marketing and Sales      |                      6008127 |
+| Research and Development |                      4587037 |
+| Quality Management       |                      4162118 |
+| Production               |                      3374004 |
+| Customer Service         |                      3187661 |
+| Finance                  |                      2549372 |
+| Human Resources          |                      2098298 |
++--------------------------+------------------------------+
+7 rows in set (0.02 sec)
+
+\end{itemize}	
+\end{lstlisting}
+
+\end{document}

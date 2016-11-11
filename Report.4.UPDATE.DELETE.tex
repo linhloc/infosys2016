@@ -24,7 +24,7 @@ Requirements:
 \subsection*{2.1. Main steps to reach the goal}
 
 \indent First, creating 2 new departments on the table 'departments' which are Research and Development(d010) department and Marketing and Sales (d011) department respectively use the INSERT command.
-\indent Next, updating the old departments into the new departments on the table 'dept_emp'.
+\indent Next, updating the old departments into the new departments on the table 'dept_emp' and the table 'dept_manager' uses 'dept_no' property.
 \indent Finally, deleting the tuples of the four departments on the table which are Development (d005), Research (d008), Marketing (d001), and Sales (d007).
 
 \subsection*{2.2. Explaining}
@@ -67,6 +67,28 @@ UPDATE IGNORE `dept_emp` SET dept_emp.dept_no="d011" WHERE dept_emp.dept_no = "d
 + Output:
 Query OK, 48593 rows affected (1.30 sec)
 Rows matched: 52245  Changed: 48593  Warnings: 0
+
+UPDATE command on table "dept_manager":
+
+UPDATE IGNORE `dept_manager` SET dept_manager.dept_no="d010" WHERE dept_manager.dept_no = "d005";
++ Output
+Query OK, 2 rows affected (0.02 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+UPDATE IGNORE `dept_manager` SET dept_manager.dept_no="d010" WHERE dept_manager.dept_no = "d008";
++ Output
+Query OK, 2 rows affected (0.02 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+UPDATE IGNORE `dept_manager` SET dept_manager.dept_no="d011" WHERE dept_manager.dept_no = "d001";
++ Output
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+UPDATE IGNORE `dept_manager` SET dept_manager.dept_no="d011" WHERE dept_manager.dept_no = "d007";
++ Output:
+Query OK, 2 rows affected (0.00 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
 
 DELETE command:
 DELETE FROM `departments` WHERE departments.dept_no="d001" OR departments.dept_no="d005" OR departments.dept_no="d007" OR departments.dept_no="d008";

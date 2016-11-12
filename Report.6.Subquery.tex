@@ -1,0 +1,219 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 6: Write SQL queries using subqueries \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\section{ Who have the same name (last_name) as the managers of the “Finance” department? }
+Analizing the query:
+\\
+\begin{itemize}
+First, get the managers of the “Finance” department
+\begin{lstlisting}
+	\item SQL Command
+	SELECT emp_no From `dept_manager` 
+	JOIN `departments` ON dept_manager.dept_no = departments.dept_no 
+	WHERE departments.dept_name = "Finance";
+\end{lstlisting}
+Next, get the last name of these managers
+\begin{lstlisting}
+	\item SQL Command
+	SELECT last_name FROM `employees` 
+	WHERE employees.emp_no 
+	IN (
+		SELECT emp_no From `dept_manager` 
+		JOIN `departments` ON dept_manager.dept_no = departments.dept_no 
+		WHERE departments.dept_name = "Finance"
+	);
+\end{lstlisting}
+Finally, find who has the same last name with last name of these managers
+\begin{lstlisting}
+	\item SQL Command
+	SELECT CONCAT(first_name,' ',last_name) AS Fullname
+	FROM `employees`
+	WHERE employees.`last_name` IN 
+	(SELECT last_name
+	FROM `employees`
+	WHERE employees.emp_no IN 
+	(SELECT emp_no From `dept_manager`
+	JOIN `departments` ON dept_manager.dept_no = departments.dept_no
+	WHERE departments.dept_name = "Finance"));
+	
+	\item Other command
+	SELECT CONCAT(first_name,' ',last_name) AS Fullname 
+	FROM `employees` 
+	WHERE employees.`last_name` IN 
+	(SELECT last_name 
+	FROM `employees` JOIN dept_manager ON employees.emp_no = dept_manager.emp_no
+	JOIN departments ON departments.dept_no = dept_manager.dept_no
+	WHERE departments.dept_name = 'Finance');
+	\item Output
+| Shirish Legleitner      |
+| Arvind Alpin            |
+| Shaw Alpin              |
+| Qiwen Alpin             |
+| Kristine Alpin          |
+| Conrado Alpin           |
+| Uri Legleitner          |
+| Danil Alpin             |
+| Constantijn Legleitner  |
+| Anoosh Legleitner       |
+| Aiichiro Legleitner     |
+| Gift Legleitner         |
+| Xinan Legleitner        |
+| Gilbert Alpin           |
+| Ramalingam Alpin        |
+| Ekawit Alpin            |
+| Hilary Legleitner       |
+| Geoffry Alpin           |
+| Heping Alpin            |
+| Hidde Alpin             |
++-------------------------+
+408 rows in set (4.63 sec)
+
+\end{lstlisting}
+
+select employees.emp_no, employees.first_name, employees.last_name from employees where employees.last_name in (select employees.last_name from employees where employees.emp_no in (select dept_manager.emp_no from `dept_manager` join departments on dept_manager.dept_no = dept_manager.dept_no where departments.dept_name = 'Finance'));
+
+\end{itemize}
+
+\section{ Who in the “Production” department were hired after the promotion of the last manager in that department? }
+firstly, find the date of the last manager who was promoted in "Production" department
+\begin{itemize}
+\begin{lstlisting}
+	\item SQL Command
+	SELECT from_date FROM `dept_manager` ORDER BY from_date DESC LIMIT 0,1;
+\end{lstlisting}
+Next, Find employees who work for the “Production” department from the day that was find in the previous step.
+\end{itemize}
+\begin{lstlisting}
+	\item SQL Command
+	SELECT CONCAT(first_name,' ',last_name) AS Fullname 
+	FROM `employees` 
+	JOIN `titles` ON employees.emp_no=titles.emp_no 
+	WHERE titles.from_date >= (SELECT from_date FROM `dept_manager` ORDER BY from_date DESC LIMIT 0,1);
+	
+	\item Output
+| Masanao Ducloy                |
+| Uwe Uludag                    |
+| Katsuo Leuchs                 |
+| Shuichi Piazza                |
+| Martial Weisert               |
+| Gino Usery                    |
+| Yunming Mitina                |
+| Mohammed Pleszkun             |
+| Uri Juneja                    |
+| Gila Lukaszewicz              |
+| Rimli Dusink                  |
+| Bangqing Kleiser              |
+| Keiichiro Lindqvist           |
+| Khaled Kohling                |
+| Pohua Sichman                 |
+| DeForest Mullainathan         |
+| Dekang Lichtner               |
+| Zito Baaz                     |
+| Patricia Breugel              |
+| Sachin Tsukuda                |
++-------------------------------+
+148376 rows in set (1.27 sec)
+
+\end{lstlisting}
+
+\section{ Find the average salary of each department, from highest to lowest. }
+\begin{itemize}
+To begin with, we find the average salary of each employees.
+\begin{lstlisting}
+	\item SQL Command
+	SELECT employees.emp_no, AVG(salary) AS avg_emp 
+	FROM `employees` 
+	JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+	GROUP BY salaries.emp_no;
+\end{lstlisting}
+Then, we query the average salary of each department base on the average salary of each employee, from highest to lowest.
+\begin{lstlisting}
+	\item SQL Command
+	SELECT departments.dept_name, AVG (new_table.avg_emp) AS Average_Salary 
+	FROM (
+		SELECT employees.emp_no AS emp_no_new, AVG(salary) AS avg_emp 
+		FROM `employees` 
+		JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+		GROUP BY salaries.emp_no
+	) AS new_table 
+	JOIN `dept_emp` ON new_table.emp_no_new = dept_emp.emp_no 
+	JOIN `departments` ON departments.dept_no = dept_emp.dept_no 
+	GROUP BY departments.dept_no 
+	ORDER BY Average_Salary DESC;
+
+	\item Output
++--------------------+----------------+
+| dept_name          | Average_Salary |
++--------------------+----------------+
+| Sales              | 78313.22247361 |
+| Marketing          | 69541.61771136 |
+| Finance            | 68061.43501801 |
+| Research           | 57322.03105659 |
+| Production         | 57253.31382027 |
+| Development        | 57152.20845497 |
+| Customer Service   | 56480.08591880 |
+| Quality Management | 54892.93507273 |
+| Human Resources    | 53214.29085744 |
++--------------------+----------------+
+9 rows in set (14.86 sec)
+
+
+\end{lstlisting}
+\end{itemize}
+
+\section{ Find the average salary of each type of Engineer, from highest to lowest. }
+\begin{itemize}
+First, find the average salary of all employees belong to each type of Engineer
+\begin{lstlisting}
+	\item SQL Command
+	SELECT AVG(salary) AS emp_avg_wage, titles.title AS Type_of_Engineer 
+	FROM `employees` 
+	JOIN `titles` ON employees.emp_no = titles.emp_no
+	JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+	WHERE titles.title LIKE '%Engineer%' 
+	GROUP BY employees.emp_no;
+\end{lstlisting}
+Next, we calculate the average salary of each type of Engineer, from highest to lowest.
+\begin{lstlisting}
+	\item SQL Command
+	SELECT table_salary.Type_of_Engineer, AVG(table_salary.emp_avg_wage) AS average_type_engineer 
+	FROM(
+		SELECT AVG(salary) AS emp_avg_wage, titles.title AS Type_of_Engineer 
+		FROM `employees` 
+		JOIN `titles` ON employees.emp_no = titles.emp_no 
+		JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+		WHERE titles.title LIKE '%Engineer%' GROUP BY employees.emp_no
+	) AS table_salary 
+	GROUP BY table_salary.Type_of_Engineer 
+	ORDER BY average_type_engineer DESC;
+
+	\item Output
++--------------------+-----------------------+
+| Type_of_Engineer   | average_type_engineer |
++--------------------+-----------------------+
+| Engineer           |        57007.79701364 |
+| Assistant Engineer |        56963.53043254 |
+| Senior Engineer    |        56936.31791254 |
++--------------------+-----------------------+
+3 rows in set (35.72 sec)
+
+\end{lstlisting}
+\end{itemize}
+
+\end{document}

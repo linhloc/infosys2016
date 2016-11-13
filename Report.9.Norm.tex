@@ -1,0 +1,78 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 9: Exercise on Database Normalization \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\section{ Which normal form does the employee database satisfy? Why?}
+The employee database satisfy the Third normal from (3NF).
+Because this data base has no duplicate column and each non-key column always depend on the primary key.
+
+\section{ Normalize the document to 3NF }
+We have 4 table to store information which are product, customer, cityCountry, and orderFrom. 
+But one order can have many products and one product can be ordered by many time, therefore we have one more table order_pro
+\begin{lstlisting}
+		+-----------------------------+
+		|           product           |
+		+-----------------------------+
+		|          pro_id             |
+		|          description        |
+		|          price              |
+		+-----------------------------+
+
+		+-----------------------------+
+		|           customer          |
+		+-----------------------------+
+		|          cus_id             |
+		|          name               |
+		|          phone              |
+		|          address            |
+		|          city               |
+		+-----------------------------+
+
+		+-----------------------------+
+		|          cityCountry        |
+		+-----------------------------+
+		|          city               |
+		|          country            |
+		+-----------------------------+
+
+		+-----------------------------+
+		|           orderForm         |
+		+-----------------------------+
+		|          order_id           |
+		|          date               |
+		|          cus_id             |
+		+-----------------------------+
+
+
+		+-----------------------------+
+		|           order_pro         |
+		+-----------------------------+
+		|          order_id           |
+		|          pro_id             |
+		|          quantity           |
+		+-----------------------------+
+		
+
+\end{lstlisting}
+
+
+
+
+\end{itemize}
+
+\end{document}

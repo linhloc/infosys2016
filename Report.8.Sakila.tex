@@ -1,0 +1,302 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 8: Writting the queries on Sakira database\par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\section{ Preparations }
+\begin{itemize}
+	\item Search and download MySQL Sakila database
+	\item Install Sakila database
+	\item Use Sakila database
+	\begin{lstlisting}
+	 
+		USE sakila;
+		SHOW TABLES;
+	~~>Output:
+		+----------------------------+
+		| Tables_in_sakila           |
+		+----------------------------+
+		| actor                      |
+		| actor_info                 |
+		| address                    |
+		| category                   |
+		| city                       |
+		| country                    |
+		| customer                   |
+		| customer_list              |
+		| film                       |
+		| film_actor                 |
+		| film_category              |
+		| film_list                  |
+		| film_text                  |
+		| inventory                  |
+		| language                   |
+		| nicer_but_slower_film_list |
+		| payment                    |
+		| rental                     |
+		| sales_by_film_category     |
+		| sales_by_store             |
+		| staff                      |
+		| staff_list                 |
+		| store                      |
+		+----------------------------+
+		23 rows in set (0.00 sec)
+
+	\end{lstlisting}
+
+\end{itemize}
+
+\section{ List names of all the languages in the database (sorted alphabetically)? }
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT name FROM language ORDER BY name;
+	~~> Output
+		+----------+
+		| name     |
+		+----------+
+		| English  |
+		| French   |
+		| German   |
+		| Italian  |
+		| Japanese |
+		| Mandarin |
+		+----------+
+		6 rows in set (0.00 sec)
+
+	\end{lstlisting}
+\end{itemize}
+
+\section{ List full names of actors with "GER" in their last name, ordered by their first name }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT CONCAT(first_name,' ',last_name) AS Full_name 
+		FROM `actor`
+		WHERE last_name LIKE '%GER%' 
+		ORDER BY first_name;
+	~~> Output
+		+-------------------+
+		| Full_name         |
+		+-------------------+
+		| CAMERON ZELLWEGER |
+		| JULIA ZELLWEGER   |
+		| MICHAEL BOLGER    |
+		| MINNIE ZELLWEGER  |
+		| VAL BOLGER        |
+		| VIVIEN BASINGER   |
+		+-------------------+
+		6 rows in set (0.00 sec)
+
+	\end{lstlisting}
+\end{itemize}
+
+\section{ Find all the addresses where postal code starts with "57", and return addresses sorted. }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT address FROM `address` WHERE postal_code LIKE "57%" ORDER BY address;
+	~~> Output
+		+-----------------------------------+
+		| address                           |
+		+-----------------------------------+
+		| 1029 Dzerzinsk Manor              |
+		| 1061 Ede Avenue                   |
+		| 1287 Xiangfan Boulevard           |
+		| 1309 Weifang Street               |
+		| 1515 Korla Way                    |
+		| 1697 Kowloon and New Kowloon Loop |
+		| 231 Kaliningrad Place             |
+		| 390 Wroclaw Way                   |
+		| 431 Szkesfehrvr Avenue            |
+		| 687 Alessandria Parkway           |
+		| 869 Shikarpur Way                 |
+		+-----------------------------------+
+		11 rows in set (0.00 sec)
+
+\end{lstlisting}
+
+\end{itemize}
+
+\section{ How many films involve a "DWARF" in their titles? }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT COUNT(film_id) FROM `film` WHERE title LIKE '%DWARF%';
+	~~> Output
+		+----------------+
+		| COUNT(film_id) |
+		+----------------+
+		|              2 |
+		+----------------+
+		1 row in set (0.00 sec)
+	\end{lstlisting}
+\end{itemize}
+
+\section{ Find full names of actors who played in a film involving ’WAR’ in title and longer than 2.5 hours, along with the title, run length and release year of the movie, sorted by the actors’ last names. }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT CONCAT(first_name,' ',last_name) AS Full_name, title, length, release_year 
+		FROM `actor`
+		JOIN `film_actor` ON actor.actor_id = film_actor.actor_id
+		JOIN `film` ON film.film_id = film_actor.film_id
+		WHERE film.title LIKE '%WAR%'
+		AND film.length > 150
+		ORDER BY actor.last_name;
+	~~> Output
+		+-------------------+---------------------+--------+--------------+
+		| Full_name         | title               | length | release_year |
+		+-------------------+---------------------+--------+--------------+
+		| ANGELINA ASTAIRE  | WARDROBE PHANTOM    |    178 |         2006 |
+		| KARL BERRY        | LEATHERNECKS DWARFS |    153 |         2006 |
+		| SUSAN DAVIS       | LEATHERNECKS DWARFS |    153 |         2006 |
+		| RIVER DEAN        | WARDROBE PHANTOM    |    178 |         2006 |
+		| SPENCER DEPP      | LEATHERNECKS DWARFS |    153 |         2006 |
+		| BOB FAWCETT       | LEATHERNECKS DWARFS |    153 |         2006 |
+		| GREGORY GOODING   | WARDROBE PHANTOM    |    178 |         2006 |
+		| ADAM GRANT        | GLADIATOR WESTWARD  |    173 |         2006 |
+		| KIRK JOVOVICH     | GLADIATOR WESTWARD  |    173 |         2006 |
+		| KIRK JOVOVICH     | WARDROBE PHANTOM    |    178 |         2006 |
+		| JULIA MCQUEEN     | GLADIATOR WESTWARD  |    173 |         2006 |
+		| PENELOPE MONROE   | LEATHERNECKS DWARFS |    153 |         2006 |
+		| WARREN NOLTE      | WARDROBE PHANTOM    |    178 |         2006 |
+		| JAYNE SILVERSTONE | GLADIATOR WESTWARD  |    173 |         2006 |
+		| IAN TANDY         | GLADIATOR WESTWARD  |    173 |         2006 |
+		| IAN TANDY         | LEATHERNECKS DWARFS |    153 |         2006 |
+		| THORA TEMPLE      | WARDROBE PHANTOM    |    178 |         2006 |
+		| WALTER TORN       | WARDROBE PHANTOM    |    178 |         2006 |
+		| NICK WAHLBERG     | WARDROBE PHANTOM    |    178 |         2006 |
+		| UMA WOOD          | LEATHERNECKS DWARFS |    153 |         2006 |
+		| CAMERON ZELLWEGER | GLADIATOR WESTWARD  |    173 |         2006 |
+		+-------------------+---------------------+--------+--------------+
+		21 rows in set (0.04 sec)
+	\end{lstlisting}
+\end{itemize}
+
+\section{ Find all the film categories in which there are between 55 and 65 films. Return the names of these categories and the number of films per category, sorted by the number of films descending. }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT category.category_id, category.name, COUNT(film.film_id) AS No_Of_Film
+		FROM `category`
+		JOIN `film_category` ON category.category_id = film_category.category_id
+		JOIN `film` ON film.film_id = film_category.film_id
+		GROUP BY category_id HAVING No_Of_Film >= 55 AND No_Of_Film <=65
+		ORDER BY No_Of_Film;
+	~~> Output
+		+-------------+----------+------------+
+		| category_id | name     | No_Of_Film |
+		+-------------+----------+------------+
+		|          11 | Horror   |         56 |
+		|           4 | Classics |         57 |
+		|          16 | Travel   |         57 |
+		|           5 | Comedy   |         58 |
+		|           3 | Children |         60 |
+		|          10 | Games    |         61 |
+		|          14 | Sci-Fi   |         61 |
+		|           7 | Drama    |         62 |
+		|          13 | New      |         63 |
+		|           1 | Action   |         64 |
+		+-------------+----------+------------+
+		10 rows in set (0.01 sec)
+
+	\end{lstlisting}
+\end{itemize}
+
+\section{ In how many film categories is the average difference between the film replacement cost and the rental rate larger than 17? }
+
+\begin{itemize}
+First, find the average difference between the film replacement cost and the rental rate of in each category.
+Then, count the number of film categories which have the average larger than 17
+\item SQL Command
+	\begin{lstlisting}
+		SELECT COUNT(average_difference.avg) 
+		FROM (
+			SELECT category.category_id, 
+				AVG(film.replacement_cost - film.rental_rate) AS avg
+			FROM `category`
+			JOIN `film_category` ON category.category_id = film_category.category_id
+			JOIN `film` ON film.film_id = film_category.film_id
+			GROUP BY category.category_id
+		)
+		AS average_difference 
+		WHERE average_difference.avg > 17;
+	~~> Output
+		+-------------------------------+
+		| COUNT(average_difference.avg) |
+		+-------------------------------+
+		|                             8 |
+		+-------------------------------+
+		1 row in set (0.01 sec)
+
+
+	\end{lstlisting}
+\end{itemize}
+
+\section{ Find the address district(s) name(s) such that the minimal postal code in the district(s) is maximal over all the districts. Make sure your query ignores empty postal codes and district names. }
+
+\begin{itemize}
+First, get the managers of the “Finance” department
+\item SQL Command
+	\begin{lstlisting}
+		SELECT district, MIN(postal_code) AS min_postal_code
+		FROM address
+		WHERE district != ' ' AND postal_code != ' '
+		GROUP BY district
+		ORDER BY min_postal_code DESC
+		LIMIT 0,1;
+	~~>item Output
+		+----------+-----------------+
+		| district | min_postal_code |
+		+----------+-----------------+
+		| Crdoba   | 99865           |
+		+----------+-----------------+
+		1 row in set (0.01 sec)
+	\end{lstlisting}
+\end{itemize}
+
+\section{ Find the names (first and last) of all the actors and customers whose first name is the same as the first name of the actor with ID 101 (exclude the actor with ID 101). }
+
+\begin{itemize}
+	\item SQL Command
+	\begin{lstlisting}
+		SELECT first_name, last_name 
+		FROM actor
+		WHERE first_name = (SELECT first_name 
+				FROM actor WHERE actor_id = 101) AND actor_id != 101
+		UNION
+		SELECT first_name, last_name
+		FROM customer
+		WHERE first_name = (SELECT first_name FROM actor WHERE actor_id = 101);
+	~~> Output
+		+------------+-----------+
+		| first_name | last_name |
+		+------------+-----------+
+		| SUSAN      | DAVIS     |
+		| SUSAN      | WILSON    |
+		+------------+-----------+
+		2 rows in set (0.00 sec)
+	\end{lstlisting}
+\end{itemize}
+
+\end{document}

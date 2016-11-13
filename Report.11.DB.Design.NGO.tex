@@ -38,25 +38,347 @@ the city and a small description of the action.
 
 \section{ How you made up the structure (those conceptual/logical/physical models) }
 
+\item Determine concepts that need to be stored
+	\begin{itemize}
+	\item Project
+	\item Person
+	\item Office
+	\item Action
+	\item City
+	\item Country
+	\end{itemize}
 
-\section{ SQL commands to create the database and outputs }
+\item Determine attributes
+	\begin{itemize}
+	\item Project
+		\begin{itemize}
+		\item code
+		\item title
+		\item BeginDate
+		\item EndDate
+		\item Budget
+		\end{itemize}
+	\item Person
+		\begin{itemize}
+		\item name
+		\end{itemize}
+	\item Office
+		\begin{itemize}
+		\item identifier
+		\item address
+		\item phone
+		\end{itemize}
+	\item Action
+		\begin{itemize}
+		\item identifier
+		\item description
+		\end{itemize}
+	\item city
+		\begin{itemize}
+		\item name
+		\item investmentProject
+		\end{itemize}
+	\item Country
+		\begin{itemize}
+		\item name
+		\item inhabitant
+		\end{itemize}
+	\end{itemize}
 
+\item Determine links
+	\begin{itemize}
+	\item Project and Person («has»)
+	\item Project and Action («has»)
+	\item Action and City («impact»)
+	\item City and Country
+	\item City and Office («has»)
+	\item Office and Person («manage»)
+	\item Project and Office («has»)
+	\end{itemize}
+
+\item Determine types of attributes
+	\begin{itemize}
+	\item Project
+		\begin{itemize}
+		\item code VARCHAR (10)
+		\item title VARCHAR (50)
+		\item BeginDate DATE
+		\item EndDate DATE
+		\item Budget FLOAT
+		\end{itemize}
+	\item Person
+		\begin{itemize}
+		\item name VARCHAR (50)
+		\end{itemize}
+	\item Office
+		\begin{itemize}
+		\item identifier VARCHAR (50)
+		\item address VARCHAR (100)
+		\item phone INT (10)
+		\end{itemize}
+	\item Action
+		\begin{itemize}
+		\item identifier VARCHAR (100)
+		\item description VARCHAR (255)
+		\end{itemize}
+	\item city
+		\begin{itemize}
+		\item name VARCHAR (50)
+		\item investmentProject FLOAT
+		\end{itemize}
+	\item Country
+		\begin{itemize}
+		\item name VARCHAR (50)
+		\item inhabitant INT
+		\end{itemize}
+	\end{itemize}
+
+\item Solve foreign key links, Primary key
+	\begin{itemize}
+	\item Project
+		\begin{itemize}
+		\item projectID INT
+		\item officeID INT
+		\item directorID INT
+		\item code VARCHAR (10)
+		\item title VARCHAR (50)
+		\item BeginDate DATE
+		\item EndDate DATE
+		\item Budget FLOAT
+		\end{itemize}
+	\item Person
+		\begin{itemize}
+		\item personID INT
+		\item name VARCHAR (50)
+		\end{itemize}
+	\item Office
+		\begin{itemize}
+		\item officeID INT
+		\item identifier VARCHAR (50)
+		\item address VARCHAR (100)
+		\item phone INT (10)
+		\end{itemize}
+	\item Action
+		\begin{itemize}
+		\item actionID INT
+		\item identifier VARCHAR (100)
+		\item description VARCHAR (255)
+		\end{itemize}
+	\item City
+		\begin{itemize}
+		\item cityID INT
+		\item countryID INT
+		\item country
+		\item name VARCHAR (50)
+		\end{itemize}
+	\item Country
+		\begin{itemize}
+		\item countryID INT
+		\item name VARCHAR (50)
+		\item inhabitant INT
+		\end{itemize}
+	\item Adding 3 table named: ActionCity, ProjectCity, and OfficeCity
+	\item ActionCity
+		\begin{itemize}
+		\item cityID INT
+		\item actionID INT
+		\end{itemize}
+	\item ProjectCity
+		\begin{itemize}
+		\item cityID INT
+		\item projectID INT
+		\item investmentProject FLOAT
+		\end{itemize}
+	\item OfficeCity
+		\begin{itemize}
+		\item cityID INT
+		\item officeID INT
+		\end{itemize}
+	\end{itemize}
+\section{ SQL commands to create the database and outputs}
 \begin{lstlisting}
-		+-----------------------------+
-		|           product           |
-		+-----------------------------+
-		|          pro_id             |
-		|          description        |
-		|          price              |
-		+-----------------------------+
-
 		
+	CREATE DATABASE NGO;
+	USE NGO;	
+
+	CREATE TABLE Person ( 
+		PersonID INT NOT NULL AUTO_INCREMENT, 
+		Name VARCHAR(50), 
+		PRIMARY KEY (PersonID)
+	);
+	CREATE TABLE Country ( 
+		CountryID INT NOT NULL AUTO_INCREMENT, 
+		Name VARCHAR(50), 
+		PRIMARY KEY (CountryID)
+	);
+	CREATE TABLE City ( 
+		CityID INT NOT NULL AUTO_INCREMENT, 
+		CountryID INT,
+		Name VARCHAR(50), 
+		PRIMARY KEY (CityID),
+		FOREIGN KEY (CountryID) REFERENCES Country (CountryID)
+	);
+	CREATE TABLE Office ( 
+		OfficeID INT NOT NULL AUTO_INCREMENT, 
+		CityID INT,
+		DirectorID INT,
+		Indentifier VARCHAR(50), 
+		Address VARCHAR(100), 
+		Phone INT(11),
+		PRIMARY KEY (OfficeID),
+		FOREIGN KEY (CityID) REFERENCES City(CityID),
+		FOREIGN KEY (DirectorID) REFERENCES Person(PersonID)
+	);
+	CREATE TABLE Project ( 
+		ProjectID INT NOT NULL AUTO_INCREMENT, 
+		OfficeID INT,
+		DirectorID INT,
+		Code VARCHAR(10), 
+		Title VARCHAR(50), 
+		BeginDate DATE,
+		EndDate DATE,
+		Budget FLOAT,
+		PRIMARY KEY (ProjectID),
+		FOREIGN KEY (OfficeID) REFERENCES Office(OfficeID),
+		FOREIGN KEY (DirectorID) REFERENCES Persion(PersonID)
+	);
+	
+	CREATE TABLE Action ( 
+		ActionID INT NOT NULL AUTO_INCREMENT, 
+		ProjectID INT,
+		Indentifier VARCHAR(50), 
+		Description VARCHAR(255), 
+		PRIMARY KEY (ActionID),
+		FOREIGN KEY (ProjectID) REFERENCES Project (ProjectID)
+	);
+
+	CREATE TABLE ProjectCity ( 
+		ProjectID INT, 
+		CityID INT,
+		Investment FLOAT,
+		FOREIGN KEY (ProjectID) REFERENCES Project(ProjectID), 
+		FOREIGN KEY (CityID) REFERENCES City(CityID),
+		UNIQUE (ProjectID, CityID)
+	);
+
+	CREATE TABLE OfficeCity ( 
+		OfficeID INT, 
+		CityID INT,
+		Investment FLOAT,
+		FOREIGN KEY (OfficeID) REFERENCES Office(OfficeID), 
+		FOREIGN KEY (CityID) REFERENCES City(CityID),
+		UNIQUE (OfficeID, CityID)
+	);
+
+	CREATE TABLE ActionCity ( 
+		ActionID INT, 
+		CityID INT,
+		Investment FLOAT,
+		FOREIGN KEY (ActionID) REFERENCES Action(ActionID), 
+		FOREIGN KEY (CityID) REFERENCES City(CityID),
+		UNIQUE (ActionID, CityID)
+	);
+\end{lstlisting}
+\item Output
+\begin{lstlisting}
+	desc Person;
+	+----------+-------------+------+-----+---------+----------------+
+	| Field    | Type        | Null | Key | Default | Extra          |
+	+----------+-------------+------+-----+---------+----------------+
+	| PersonID | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| Name     | varchar(50) | YES  |     | NULL    |                |
+	+----------+-------------+------+-----+---------+----------------+
+	2 rows in set (0.00 sec)
+
+	desc Country;
+	+-----------+-------------+------+-----+---------+----------------+
+	| Field     | Type        | Null | Key | Default | Extra          |
+	+-----------+-------------+------+-----+---------+----------------+
+	| CountryID | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| Name      | varchar(50) | YES  |     | NULL    |                |
+	+-----------+-------------+------+-----+---------+----------------+
+	2 rows in set (0.04 sec)
+
+	desc City;
+	+-----------+-------------+------+-----+---------+----------------+
+	| Field     | Type        | Null | Key | Default | Extra          |
+	+-----------+-------------+------+-----+---------+----------------+
+	| CityID    | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| CountryID | int(11)     | YES  | MUL | NULL    |                |
+	| Name      | varchar(50) | YES  |     | NULL    |                |
+	+-----------+-------------+------+-----+---------+----------------+
+	3 rows in set (0.00 sec)
+
+	desc Office;
+	+-------------+--------------+------+-----+---------+----------------+
+	| Field       | Type         | Null | Key | Default | Extra          |
+	+-------------+--------------+------+-----+---------+----------------+
+	| OfficeID    | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| CityID      | int(11)      | YES  | MUL | NULL    |                |
+	| DirectorID  | int(11)      | YES  | MUL | NULL    |                |
+	| Indentifier | varchar(50)  | YES  |     | NULL    |                |
+	| Address     | varchar(100) | YES  |     | NULL    |                |
+	| Phone       | int(11)      | YES  |     | NULL    |                |
+	+-------------+--------------+------+-----+---------+----------------+
+	6 rows in set (0.00 sec)
+
+	desc Project;
+	+------------+-------------+------+-----+---------+----------------+
+	| Field      | Type        | Null | Key | Default | Extra          |
+	+------------+-------------+------+-----+---------+----------------+
+	| ProjectID  | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| OfficeID   | int(11)     | YES  | MUL | NULL    |                |
+	| DirectorID | int(11)     | YES  | MUL | NULL    |                |
+	| Code       | varchar(10) | YES  |     | NULL    |                |
+	| Title      | varchar(50) | YES  |     | NULL    |                |
+	| BeginDate  | date        | YES  |     | NULL    |                |
+	| EndDate    | date        | YES  |     | NULL    |                |
+	| Budget     | float       | YES  |     | NULL    |                |
+	+------------+-------------+------+-----+---------+----------------+
+	8 rows in set (0.00 sec)
+
+	desc Action;
+	+-------------+--------------+------+-----+---------+----------------+
+	| Field       | Type         | Null | Key | Default | Extra          |
+	+-------------+--------------+------+-----+---------+----------------+
+	| ActionID    | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| ProjectID   | int(11)      | YES  | MUL | NULL    |                |
+	| Indentifier | varchar(50)  | YES  |     | NULL    |                |
+	| Description | varchar(255) | YES  |     | NULL    |                |
+	+-------------+--------------+------+-----+---------+----------------+
+	4 rows in set (0.00 sec)
+
+	desc ProjectCity;
+	+------------+---------+------+-----+---------+-------+
+	| Field      | Type    | Null | Key | Default | Extra |
+	+------------+---------+------+-----+---------+-------+
+	| ProjectID  | int(11) | YES  | MUL | NULL    |       |
+	| CityID     | int(11) | YES  | MUL | NULL    |       |
+	| Investment | float   | YES  |     | NULL    |       |
+	+------------+---------+------+-----+---------+-------+
+	3 rows in set (0.00 sec)
+
+	desc OfficeCity;
+	+------------+---------+------+-----+---------+-------+
+	| Field      | Type    | Null | Key | Default | Extra |
+	+------------+---------+------+-----+---------+-------+
+	| OfficeID   | int(11) | YES  | MUL | NULL    |       |
+	| CityID     | int(11) | YES  | MUL | NULL    |       |
+	| Investment | float   | YES  |     | NULL    |       |
+	+------------+---------+------+-----+---------+-------+
+	3 rows in set (0.01 sec)
+
+	desc ActionCity;
+	+------------+---------+------+-----+---------+-------+
+	| Field      | Type    | Null | Key | Default | Extra |
+	+------------+---------+------+-----+---------+-------+
+	| ActionID   | int(11) | YES  | MUL | NULL    |       |
+	| CityID     | int(11) | YES  | MUL | NULL    |       |
+	| Investment | float   | YES  |     | NULL    |       |
+	+------------+---------+------+-----+---------+-------+
+	3 rows in set (0.01 sec)
 
 \end{lstlisting}
-
-
-
-
 \end{itemize}
 
 \end{document}

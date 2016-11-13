@@ -134,43 +134,90 @@ to be stored.
 	USE Magazines;	
 
 	CREATE TABLE Magazine ( 
-	MagazineID INT NOT NULL AUTO_INCREMENT, 
-	Title VARCHAR(50), 
-	ISSN VARCHAR(10), 
-	NumberStore INT, 
-	NumberStore INT(4), 
-	PRIMARY KEY (MagazineID)
+		MagazineID INT NOT NULL AUTO_INCREMENT, 
+		Title VARCHAR(50), 
+		ISSN VARCHAR(10), 
+		Volumn INT, 
+		YearStore INT(4), 
+		PRIMARY KEY (MagazineID)
 	);
-~~> output
-
 
 	CREATE TABLE Article ( 
-	ArticleID INT NOT NULL AUTO_INCREMENT, 
-	MagazineID INT,
-	Title VARCHAR(255) UNIQUE , 
-	ISSN VARCHAR(10), 
-	PageBegin INT, 
-	PageEND INT, 
-	NumberOrder INT, 
-	PRIMARY KEY (ArticleID),
-	FOREIGN KEY (MagazineID) REFERENCES Magazine (MagazineID)
+		ArticleID INT NOT NULL AUTO_INCREMENT, 
+		MagazineID INT,
+		Title VARCHAR(255) UNIQUE , 
+		ISSN VARCHAR(10), 
+		PageBegin INT, 
+		PageEND INT, 
+		NumberOrder INT, 
+		PRIMARY KEY (ArticleID),
+		FOREIGN KEY (MagazineID) REFERENCES Magazine (MagazineID)
 	);
 
 	CREATE TABLE Author ( 
-	AuthorID INT NOT NULL AUTO_INCREMENT, 
-	Name VARCHAR(50), 
-	Email VARCHAR(50), 
-	PRIMARY KEY (AuthorID)
+		AuthorID INT NOT NULL AUTO_INCREMENT, 
+		Name VARCHAR(50), 
+		Email VARCHAR(50), 
+		PRIMARY KEY (AuthorID)
 	);
 
-	CREATE TABLE ArticleAuthor ( 
-	AuthorID INT, 
-	ArticleID INT,
-	Asciption VARCHAR(50), 
-	FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID), 
-	FOREIGN KEY (ArticleID) REFERENCES Article(ArticleID),
-	UNIQUE (ArticleID, AuthorID)
+	CREATE TABLE Article_Author ( 
+		AuthorID INT, 
+		ArticleID INT,
+		Asciption VARCHAR(50), 
+		FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID), 
+		FOREIGN KEY (ArticleID) REFERENCES Article(ArticleID),
+		UNIQUE (ArticleID, AuthorID)
 	);
+\end{lstlisting}
+\item Output
+\begin{lstlisting}
+	desc Magazine;
+	+------------+-------------+------+-----+---------+----------------+
+	| Field      | Type        | Null | Key | Default | Extra          |
+	+------------+-------------+------+-----+---------+----------------+
+	| MagazineID | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| Title      | varchar(50) | YES  |     | NULL    |                |
+	| ISSN       | varchar(10) | YES  |     | NULL    |                |
+	| Volumn     | int(11)     | YES  |     | NULL    |                |
+	| YearStore  | int(4)      | YES  |     | NULL    |                |
+	+------------+-------------+------+-----+---------+----------------+
+	5 rows in set (0.01 sec)
+
+	desc Article;
+	+-------------+--------------+------+-----+---------+----------------+
+	| Field       | Type         | Null | Key | Default | Extra          |
+	+-------------+--------------+------+-----+---------+----------------+
+	| ArticleID   | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| MagazineID  | int(11)      | YES  | MUL | NULL    |                |
+	| Title       | varchar(255) | YES  | UNI | NULL    |                |
+	| ISSN        | varchar(10)  | YES  |     | NULL    |                |
+	| PageBegin   | int(11)      | YES  |     | NULL    |                |
+	| PageEND     | int(11)      | YES  |     | NULL    |                |
+	| NumberOrder | int(11)      | YES  |     | NULL    |                |
+	+-------------+--------------+------+-----+---------+----------------+
+	7 rows in set (0.00 sec)
+
+	desc Author;
+	+----------+-------------+------+-----+---------+----------------+
+	| Field    | Type        | Null | Key | Default | Extra          |
+	+----------+-------------+------+-----+---------+----------------+
+	| AuthorID | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| Name     | varchar(50) | YES  |     | NULL    |                |
+	| Email    | varchar(50) | YES  |     | NULL    |                |
+	+----------+-------------+------+-----+---------+----------------+
+	3 rows in set (0.00 sec)
+
+	desc Article_Author;
+	+-----------+-------------+------+-----+---------+-------+
+	| Field     | Type        | Null | Key | Default | Extra |
+	+-----------+-------------+------+-----+---------+-------+
+	| AuthorID  | int(11)     | YES  | MUL | NULL    |       |
+	| ArticleID | int(11)     | YES  | MUL | NULL    |       |
+	| Asciption | varchar(50) | YES  |     | NULL    |       |
+	+-----------+-------------+------+-----+---------+-------+
+	3 rows in set (0.00 sec)
+
 \end{lstlisting}
 
 \end{itemize}

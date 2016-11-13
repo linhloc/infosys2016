@@ -1,0 +1,62 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 11: Design a database \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\begin{itemize}
+
+\item Problem:
+\indent A Non-Government Organization (NGO) wants to prepare a database for
+all its projects. It has diverse head offices in several countries which take
+manage and coordinate the projects of that country.
+\\
+\indent On head offices, an identifier, the city and country where it is located, its
+address, a phone number and the name of the director are stored. Every
+head office manages a set of projects, with a code, a title, dates of beginning
+and end, the assigned budget and the name of the person in charge. One
+project is formed by a set of actions that can affect to several cities.
+\\
+\indent We want to know what actions are realised in each city, storing its name,
+country and no of inhabitants. We also need an identifier to differentiate
+them. Also there is wished the investment of the project that corresponds to
+the city and a small description of the action.
+
+
+\section{ How you made up the structure (those conceptual/logical/physical models) }
+
+
+\section{ SQL commands to create the database and outputs }
+
+\begin{lstlisting}
+		+-----------------------------+
+		|           product           |
+		+-----------------------------+
+		|          pro_id             |
+		|          description        |
+		|          price              |
+		+-----------------------------+
+
+		
+
+\end{lstlisting}
+
+
+
+
+\end{itemize}
+
+\end{document}

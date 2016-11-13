@@ -1,0 +1,178 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 10: Design a database \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\begin{itemize}
+\item Problem:
+\indent You need a database to manage information about the magazines that you
+buy habitually.
+\\
+\indent For each magazine, its title, the ISSN (code that identifies the publication),
+number and year are stored.You need also data about the articles, including
+its title, page of beginning and page of ending. It is assumed that there are
+no two articles with the same title.
+\\
+\indent Every article can be written by several authors, whose name, e-mail address
+and ascription are stored, Besides, a number that indicates the order of has
+to be stored.
+
+\section{ How you made up the structure (those conceptual/logical/physical models) }
+
+\item Determine concepts that need to be stored
+	\begin{itemize}
+	\item magagine
+	\item article
+	\item author
+	\end{itemize}
+
+\item Determine attributes
+	\begin{itemize}
+	\item magagine
+		\begin{itemize}
+		\item title
+		\item ISSN
+		\item volumn
+		\item yearStore
+		\end{itemize}
+	\item article
+		\begin{itemize}
+		\item title
+		\item pageBegin
+		\item pageEnd
+		\item numberOrder
+		\end{itemize}
+	\item author
+		\begin{itemize}
+		\item name
+		\item email
+		\item ascription
+		\end{itemize}
+	\end{itemize}
+
+\item Determine links
+	\begin{itemize}
+	\item magazine and article («has»)
+	\item article and author («write»)
+	\end{itemize}
+
+\item Determine types of attributes
+	\begin{itemize}
+	\item magagine
+		\begin{itemize}
+		\item title VARCHAR (400)
+		\item ISSN VARCHAR (10)
+		\item volumn INT
+		\item yearStore INT
+		\end{itemize}
+	\item article
+		\begin{itemize}
+		\item title VARCHAR (255)
+		\item pageBegin INT 
+		\item pageEnd INT 
+		\item numberOrder INT
+		\end{itemize}
+	\item author
+		\begin{itemize}
+		\item name VARCHAR (50)
+		\item email VARCHAR (50)
+		\item ascription VARCHAR (50)
+		\end{itemize}
+	\end{itemize}
+
+\item Solve foreign key links, Primary key
+	\begin{itemize}
+	\item magagine
+		\begin{itemize}
+		\item magazine_id INT
+		\item title VARCHAR (400)
+		\item ISSN VARCHAR (10)
+		\item volumn INT
+		\item yearStore INT
+		\end{itemize}
+	\item article
+		\begin{itemize}
+		\item article_id INT
+		\item magazine_id INT
+		\item title VARCHAR (255)
+		\item pageBegin INT 
+		\item pageEnd INT 
+		\item numberOrder INT
+		\end{itemize}
+	\item author
+		\begin{itemize}
+		\item author_id
+		\item name VARCHAR (50)
+		\item email VARCHAR (50)
+		\end{itemize}
+	\item Add table Article_Author
+		\begin{itemize}
+		\item article_id INT
+		\item author_id INT
+		\item ascription VARCHAR (50)
+		\end{itemize}
+	\end{itemize}
+
+\section{ SQL commands to create the database and outputs}
+\begin{lstlisting}
+		
+	CREATE DATABASE Magazines;
+	USE Magazines;	
+
+	CREATE TABLE Magazine ( 
+	MagazineID INT NOT NULL AUTO_INCREMENT, 
+	Title VARCHAR(50), 
+	ISSN VARCHAR(10), 
+	NumberStore INT, 
+	NumberStore INT(4), 
+	PRIMARY KEY (MagazineID)
+	);
+~~> output
+
+
+	CREATE TABLE Article ( 
+	ArticleID INT NOT NULL AUTO_INCREMENT, 
+	MagazineID INT,
+	Title VARCHAR(255) UNIQUE , 
+	ISSN VARCHAR(10), 
+	PageBegin INT, 
+	PageEND INT, 
+	NumberOrder INT, 
+	PRIMARY KEY (ArticleID),
+	FOREIGN KEY (MagazineID) REFERENCES Magazine (MagazineID)
+	);
+
+	CREATE TABLE Author ( 
+	AuthorID INT NOT NULL AUTO_INCREMENT, 
+	Name VARCHAR(50), 
+	Email VARCHAR(50), 
+	PRIMARY KEY (AuthorID)
+	);
+
+	CREATE TABLE ArticleAuthor ( 
+	AuthorID INT, 
+	ArticleID INT,
+	Asciption VARCHAR(50), 
+	FOREIGN KEY (AuthorID) REFERENCES Author(AuthorID), 
+	FOREIGN KEY (ArticleID) REFERENCES Article(ArticleID),
+	UNIQUE (ArticleID, AuthorID)
+	);
+\end{lstlisting}
+
+\end{itemize}
+
+\end{document}

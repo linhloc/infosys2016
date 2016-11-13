@@ -1,0 +1,200 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 7: write SQL commands using views \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\section{ Who have the same name (last_name) as the managers of the “Finance” department? }
+Analizing the query:
+\\
+\begin{itemize}
+First, create view named 'manager_name' for list of the last name of managers of the “Finance” department. 
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW manager_name AS
+	SELECT last_name 
+	FROM `employees` JOIN dept_manager ON employees.emp_no = dept_manager.emp_no
+	JOIN departments ON departments.dept_no = dept_manager.dept_no
+	WHERE departments.dept_name = 'Finance';
+\end{lstlisting}
+Then, create view named 'name_like_manager' for list of the name of employees who have the same name as the managers of the “Finance” department using query with the previous view.
+\begin{lstlisting}
+
+	\item SQL Command
+	CREATE VIEW name_like_manager AS 
+	SELECT CONCAT(first_name,' ',last_name) AS Fullname 
+	FROM `employees` 
+	WHERE employees.`last_name` IN (SELECT last_name FROM manager_name);
+	
+	SELECT * FROM name_like_manager;
+
+	\item Output
+	| Shirish Legleitner      |
+	| Arvind Alpin            |
+	| Shaw Alpin              |
+	| Qiwen Alpin             |
+	| Kristine Alpin          |
+	| Conrado Alpin           |
+	| Uri Legleitner          |
+	| Danil Alpin             |
+	| Constantijn Legleitner  |
+	| Anoosh Legleitner       |
+	| Aiichiro Legleitner     |
+	| Gift Legleitner         |
+	| Xinan Legleitner        |
+	| Gilbert Alpin           |
+	| Ramalingam Alpin        |
+	| Ekawit Alpin            |
+	| Hilary Legleitner       |
+	| Geoffry Alpin           |
+	| Heping Alpin            |
+	| Hidde Alpin             |
+	+-------------------------+
+	408 rows in set (4.72 sec)
+\end{lstlisting}
+\end{itemize}
+
+\section{ Who in the “Production” department were hired after the promotion of the last manager in that department? }
+firstly, Create view named 'last_date_promotion' for command SELECT the date of the last manager who was promoted in "Production" department
+\begin{itemize}
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW last_date_promotion AS
+	SELECT from_date FROM `dept_manager` ORDER BY from_date DESC LIMIT 0,1;
+\end{lstlisting}
+Finally, Create view name 'employee_list' for the selecting of employees who work for the “Production” department from the day in the previous view.
+\end{itemize}
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW employee_list AS
+	SELECT CONCAT(first_name,' ',last_name) AS Fullname 
+	FROM `employees` 
+	JOIN `titles` ON employees.emp_no=titles.emp_no 
+	WHERE titles.from_date >= (SELECT last_date_promotion.`from_date` FROM last_date_promotion);
+\end{lstlisting}
+Show table employee_list.
+\begin{lstlisting}
+	SELECT * FROM employee_list;
+	\item Output
+	| Masanao Ducloy                |
+	| Uwe Uludag                    |
+	| Katsuo Leuchs                 |
+	| Shuichi Piazza                |
+	| Martial Weisert               |
+	| Gino Usery                    |
+	| Yunming Mitina                |
+	| Mohammed Pleszkun             |
+	| Uri Juneja                    |
+	| Gila Lukaszewicz              |
+	| Rimli Dusink                  |
+	| Bangqing Kleiser              |
+	| Keiichiro Lindqvist           |
+	| Khaled Kohling                |
+	| Pohua Sichman                 |
+	| DeForest Mullainathan         |
+	| Dekang Lichtner               |
+	| Zito Baaz                     |
+	| Patricia Breugel              |
+	| Sachin Tsukuda                |
+	+-------------------------------+
+	148376 rows in set (1.70 sec)
+
+\end{lstlisting}
+
+\section{ Find the average salary of each department, from highest to lowest. }
+\begin{itemize}
+To begin with, we create view named 'emp_avg_wage' for the selection of the average salary of each employees.
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW emp_avg_wages AS
+	SELECT employees.emp_no AS emp_no_new, AVG(salary) AS avg_emp 
+	FROM `employees` 
+	JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+	GROUP BY salaries.emp_no;
+\end{lstlisting}
+Then, we create view name 'dept_avg_wage' for querying the average salary of each department base on the average salary of each employee, from highest to lowest.
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW dept_avg_wages AS
+	SELECT departments.dept_name, AVG (emp_avg_wages.avg_emp) AS Average_Salary 
+	FROM `emp_avg_wages`
+	JOIN `dept_emp` ON emp_avg_wages.emp_no_new = dept_emp.emp_no 
+	JOIN `departments` ON departments.dept_no = dept_emp.dept_no 
+	GROUP BY departments.dept_no 
+	ORDER BY Average_Salary DESC;
+\end{lstlisting}
+Show dept_avg_wages view.
+\begin{lstlisting}
+	SELECT * FROM dept_avg_wages;
+	\item Output
+	+--------------------+----------------+
+	| dept_name          | Average_Salary |
+	+--------------------+----------------+
+	| Sales              | 78313.22247361 |
+	| Marketing          | 69541.61771136 |
+	| Finance            | 68061.43501801 |
+	| Research           | 57322.03105659 |
+	| Production         | 57253.31382027 |
+	| Development        | 57152.20845497 |
+	| Customer Service   | 56480.08591880 |
+	| Quality Management | 54892.93507273 |
+	| Human Resources    | 53214.29085744 |
+	+--------------------+----------------+
+	9 rows in set (18.77 sec)
+	
+\end{lstlisting}
+\end{itemize}
+
+\section{ Find the average salary of each type of Engineer, from highest to lowest. }
+\begin{itemize}
+First, create a view named 'emp_avg_wage_of_engineer_type' for the selection of the average salary of all employees belong to each type of Engineer
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW emp_avg_wage_of_engineer_type AS
+	SELECT AVG(salary) AS emp_avg_wage, titles.title AS Type_of_Engineer 
+	FROM `employees` 
+	JOIN `titles` ON employees.emp_no = titles.emp_no
+	JOIN `salaries` ON employees.emp_no=salaries.emp_no 
+	WHERE titles.title LIKE '%Engineer%' 
+	GROUP BY employees.emp_no;
+\end{lstlisting}
+Finally, Creating a view name 'avg_wage_of_engineer_type' calculate the average salary of each type of Engineer, from highest to lowest.
+\begin{lstlisting}
+	\item SQL Command
+	CREATE VIEW avg_wage_of_engineer_type AS
+	SELECT emp_avg_wage_of_engineer_type.Type_of_Engineer, AVG(emp_avg_wage_of_engineer_type.emp_avg_wage) 
+	AS average_type_engineer 
+	FROM `emp_avg_wage_of_engineer_type`
+	GROUP BY emp_avg_wage_of_engineer_type.Type_of_Engineer 
+	ORDER BY average_type_engineer DESC;
+\end{lstlisting}
+Show dept_avg_wages view.
+\begin{lstlisting}
+	SELECT * FROM avg_wage_of_engineer_type;
+	\item Output
+	+--------------------+-----------------------+
+	| Type_of_Engineer   | average_type_engineer |
+	+--------------------+-----------------------+
+	| Engineer           |        57007.79701364 |
+	| Assistant Engineer |        56963.53043254 |
+	| Senior Engineer    |        56936.31791254 |
+	+--------------------+-----------------------+
+	3 rows in set (41.41 sec)
+
+\end{lstlisting}
+\end{itemize}
+
+\end{document}

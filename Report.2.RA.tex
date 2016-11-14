@@ -1,0 +1,139 @@
+\documentclass[13pt,a4paper]{report}
+\usepackage{listings}
+
+\begin{document}
+\begin{titlepage}
+	\centering
+	\vspace{2cm}
+	{\huge\bfseries Report labwork 2: RA commands \par}
+	\vspace{2cm}
+	{\Large\itshape Loc Thi Thuy Linh\par}
+	\vfill
+	supervised by\par
+	Nghiem Thi Phuong \& Tran Giang Son \textsc{Brown}
+	ICT Department, USTH\par
+	\vfill
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+\subsection*{1. All info of all employees}
+\begin{itemize}
+	\item RA command
+	\begin{lstlisting}
+		\project_{emp_no, birth_date, first_name, last_name, gender} employees;
+	\end{lstlisting}
+
+	\item Output
+	\begin{lstlisting}
+		499980|1959-06-28|Gino|Usery|M
+		499981|1955-01-02|Yunming|Mitina|F
+		499982|1954-08-25|Mohammed|Pleszkun|M
+		499983|1955-08-29|Uri|Juneja|F
+		499984|1959-08-31|Kaijung|Rodham|M
+		499985|1964-12-26|Gila|Lukaszewicz|M
+		499986|1952-07-22|Nathan|Ranta|F
+		499987|1961-09-05|Rimli|Dusink|F
+		499988|1962-09-28|Bangqing|Kleiser|F
+		499989|1954-05-26|Keiichiro|Lindqvist|M
+		499990|1963-11-03|Khaled|Kohling|M
+		499991|1962-02-26|Pohua|Sichman|F
+		499992|1960-10-12|Siamak|Salverda|F
+		499993|1963-06-04|DeForest|Mullainathan|M
+		499994|1952-02-26|Navin|Argence|F
+		499995|1958-09-24|Dekang|Lichtner|F
+		499996|1953-03-07|Zito|Baaz|M
+		499997|1961-08-03|Berhard|Lenart|M
+		499998|1956-09-05|Patricia|Breugel|M
+		499999|1958-05-01|Sachin|Tsukuda|M
+		-----
+		Total number of rows: 300024
+
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{2. All info of all departments}
+\begin{itemize}
+	\item RA command
+	\begin{lstlisting}
+		\project_{dept_no, dept_name} departments;
+	\end{lstlisting}
+
+	\item Output
+	\begin{lstlisting}
+		-----
+		d001|Marketing
+		d002|Finance
+		d003|Human Resources
+		d004|Production
+		d005|Development
+		d006|Quality Management
+		d007|Sales
+		d008|Research
+		d009|Customer Service
+		-----
+		Total number of rows: 9
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{3. Full names of all employees}
+\begin{itemize}
+	The RA command \textbackslash rename only supports renaming of attributes; it does not support renaming of the input relation. So we just use the \textbackslash project to get first name and last name of the employees.
+	\item RA command
+	\begin{lstlisting}
+		\project_{first_name, last_name} employees;
+	\end{lstlisting}
+
+	\item Output
+	\begin{lstlisting}
+		Guozhong|Felder
+		Martial|Weisert
+		Chiranjit|Kuzuoka
+		Prasadram|Waleschkowski
+		Yunming|Mitina
+		Mohammed|Pleszkun
+		Kaijung|Rodham
+		Nathan|Ranta
+		Rimli|Dusink
+		Bangqing|Kleiser
+		Keiichiro|Lindqvist
+		Khaled|Kohling
+		Pohua|Sichman
+		Siamak|Salverda
+		DeForest|Mullainathan
+		Navin|Argence
+		Dekang|Lichtner
+		Zito|Baaz
+		Berhard|Lenart
+		Patricia|Breugel
+		-----
+		Total number of rows: 279408
+
+	\end{lstlisting}
+\end{itemize}
+
+\subsection*{4. Names of all departments}
+\begin{itemize}
+	\item RA command
+	\begin{lstlisting}
+		\project_{dept_name} departments;
+	\end{lstlisting}
+
+	\item Output
+	\begin{lstlisting}
+		-----
+		Marketing
+		Finance
+		Human Resources
+		Production
+		Development
+		Quality Management
+		Sales
+		Research
+		Customer Service
+		-----
+		Total number of rows: 9
+		
+	\end{lstlisting}
+\item RA cannot execute expressions with \textbackslash join relation algebra because it always returns to a message that joining property is  ambiguous. Therefore, I cannot write the remaining relational algebra expressions.
+\end{itemize}
+
